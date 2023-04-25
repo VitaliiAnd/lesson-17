@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h3>
+        <a href="../index.html"> Назад</a>
+    </h3>
+
+    <p>
+        Особиста бібліотека. Картотека домашньої бібліотеки: дані книги (автори (піб, рік народження, короткий опис), назва книги, жанр, видавництво (назва, реєстраційний номер, рік засування)). Реалізувати розділи бібліотеки (спеціальна література, хобі, домашнє господарство і т.д.), походження книги і наявність на даний час. Організувати додавання/вилучення книг та  вибір книг за назвою, за ПІБ автора, за видавництвом.
+    </p>
+
+    <script>
+        class Author {
+            constructor({surname, firstName, fathersName, authorBirthdayYear, descr}) {
+                this.surname = surname
+                this.firstName = firstName
+                this.fathersName = fathersName
+                this.authorBirthdayYear = authorBirthdayYear
+                this.descr = descr
+            }
+            getFullName(){
+                return this.surname + ' ' + this.firstName + ' ' + this.fathersName
+            }
+            toString(){
+                return `
+                ${this.surname} ${this.firstName} ${this.fathersName}<br>
+                ${this.authorBirthdayYear}<br>
+                ${this.descr}`
+            }
+        }
+
+        class Publication {
+            constructor({pubTitle, pubYear}) {
+                this.pubTitle = pubTitle
+                this.pubYear = pubYear
+                this.regNumber = new Date().getTime()
+            }
+            toString(){
+                return `Видавництво: ${this.pubTitle} - Рік Заснування: ${this.pubYear} - Реєстраційний номер: ${this.regNumber}<br> `
+            }
+        }
+        ////////////////
+        class Book {
+            constructor(initData){
+                this.author = new Author(initData)
+                this.title = initData.title
+                this.genre = initData.genre
+                this.publication = new Publication(initData)
+                this.origin = initData.origin
+            }
+            toString(){
+                return`
+                ${this.title}<br>
+                ${this.genre}<br>
+                ${this.author}<br>
+                ${this.publication}<br>`
+            }
+        }
+
+        class LibrarySection {
+            constructor(title) {
+                this.title = title
+                this.books = []
+            }
+            addBook(book) {
+                this.books.push(book)
+            }
+            removeBook(book) {
+                this.books = this.books.filter(el => el !== book)
+            }
+            toString() {
+                return `${this.title}<br> ${this.books}`
+            }
+        }
+
+        class Library {
+            constructor(librarySections) {
+                this.librarySections = librarySections
+                this.booksList = []
+            }
+            addBook(newBook){
+                let librarySectionsKeys = Object.keys(this.librarySections)
+                const selectedSections = prompt(`Виберіть номери розділів \'${newBook.title}\': \n 1. Спеціальна література\n 2. Хоббі\n 3. Шкільна література\n 4. Научна література`)
+                .split(',')
+                .map(el => parseInt(el) - 1)
+                for (const index of selectedSections) {
+                    const section = librarySectionsKeys[index]
+                    this.librarySections[section].addBook(newBook)
+                }
+                this.booksList.push(newBook)
+            }
+
+            removeBook(bookTitle) {
+                this.booksList = this.booksList.filter(el => el.title !== bookTitle)
+                for (const section in this.librarySections) {
+                    this.librarySections[section].books = this.librarySections[section]
+                    .books.filter(el => el.title !== bookTitle)
+                }
+            }
+
+            getBookOrigin(bookTitle) {
+                let book = this.booksList.find(el => el.title === bookTitle)
+                console.log(book.origin)
+            }
+
+            isBookInLibrary(title) {
+                if(this.booksList.find(el => el.title === title)) return true
+                return false
+            }
+
+            getBooksByTitle(title) {
+                return this.booksList.find(el => el.title === title)
+            }
+
+            getBooksByAuthor(val) {
+                for (const book of this.booksList) {
+                    if (book.author.getFullName() === val) console.log(book)
+                }
+            }
+
+            getBooksByPublication(val) {
+                for (const book of this.booksList) {
+                    if (book.publication.pubTitle === val) console.log(book)
+                }
+            }
+
+            printSections() {
+                for (const key in this.librarySections) {
+                    document.write(this.librarySections[key])
+                }
+            }
+
+            toString() {
+                return `${this.booksList}<br>`
+            }
+        }
+
+        let librarySections = {
+            speciaLiterature: new LibrarySection('Спеціальна література'),
+            hobby: new LibrarySection('Хоббі'),
+            schoolLiterature: new LibrarySection('Шкільна література'),
+            scientificLiterature: new LibrarySection('Научна література')
+        }
+
+        let library = new Library(librarySections)
+        library.addBook(
+            new Book({
+                surname: 'Петров',
+                firstName: 'Петро',
+                fathersName: 'Петрович',
+                authorBirthdayYear: '1900',
+                descr: 'Український автор детективів',
+                title: 'Детектив',
+                genre: 'Детектив',
+                pubTitle: 'уйкакуйаві',
+                pubYear: '1990',
+                origin: 'Куплена',
+            })
+        )
+        library.addBook(
+            new Book({
+                surname: 'Іванов',
+                firstName: 'Іван',
+                fathersName: 'Іванович',
+                authorBirthdayYear: '1950',
+                descr: 'Письменник української літератури',
+                title: 'українська література',
+                genre: 'Шкільні підручники',
+                pubTitle: 'Шкільні підручники і посібники',
+                pubYear: '2000',
+                origin: 'Подарована',
+            })
+        )
+        library.addBook(
+            new Book({
+                surname: 'Петрушка',
+                firstName: 'Петро',
+                fathersName: 'Петрович',
+                authorBirthdayYear: '1970',
+                descr: 'Вчитель інформатики',
+                title: 'Інформатика 11 класу',
+                genre: 'Шкільний підручник',
+                pubTitle: 'Посібник',
+                pubYear: '2015',
+                origin: 'Куплена',
+            })
+        )
+        library.addBook(
+            new Book({
+                surname: 'Бочка',
+                firstName: 'Богдан',
+                fathersName: 'Богданович',
+                authorBirthdayYear: '1975',
+                descr: 'Фізик-інформатик',
+                title: 'Основи інформатики',
+                genre: 'Наука',
+                pubTitle: 'Посібник',
+                pubYear: '2011',
+                origin: 'Подарована',
+            })
+        )
+        library.addBook(
+            new Book({
+                surname: 'Круглий',
+                firstName: 'Андрій',
+                fathersName: 'Андрійович',
+                authorBirthdayYear: '1969',
+                descr: 'Українська мова і література',
+                title: 'Українська мова',
+                genre: 'Навчальна література',
+                pubTitle: 'Посібник',
+                pubYear: '1999',
+                origin: 'Подарована',
+            })
+        )
+
+        library.getBooksByPublication('Підручники і посібники')
+        console.log(library)
+        document.write(library)
+        library.printSections()
+        
+    </script>
+</body>
+</html>

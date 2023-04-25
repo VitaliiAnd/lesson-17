@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <h3>
+            <a href="../index.html"> Назад</a>
+        </h3>
+        <p>
+            Створити клас, що дозволяє виконувати такі операції над масивами:
+            знаходження кількості додатних, кількості від’ємних, кількість
+            входжень деякого числа (статичні методи)
+        </p>
+
+    <script>
+
+        class arrOperations{
+            static positiveNum(arr){
+            return arr.reduce((acc, el) => (el > 0 ? acc + 1 : acc), 0)
+            }
+            static negativeNum(arr){
+                return arr.reduce((acc, el) => (el < 0 ? acc + 1 : acc), 0)
+            }
+            static numberQuantity(arr, num){
+                return arr.reduce((acc, el) => (el === num ? acc + 1 : acc), 0)
+            }
+        } 
+        let arr = [2, 4, 5, 0, -2, -3, 6, -3, -2, 8]
+
+        console.log(
+            arrOperations.positiveNum(arr),
+            arrOperations.negativeNum(arr),
+            arrOperations.numberQuantity(arr, -2)
+        )
+    </script>
+    </body>
+</html>
